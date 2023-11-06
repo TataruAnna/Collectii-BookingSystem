@@ -1,7 +1,10 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+//Vada disponibilitatile (camerele libere) pentru o anumita perioada si un anumit numar de locuri
+//Adica sa vada care camere sunt disponibile intr-o anumita perioada
+//Sorteze disponibilitatile (camerele libere) dupa pret pentru o anumita perioada si un anumit numar de locuri
+//Faca o rezervare pentru o anumita camera
 public class Guest {
     private String name;
     private String surName;

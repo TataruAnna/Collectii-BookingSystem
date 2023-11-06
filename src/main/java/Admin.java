@@ -1,9 +1,20 @@
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+//Administratorii de hotel vor putea sa:
+//
+//Managerieze camerele
+//Adaugare camera
+//Stergere camera
+//Vizualizare camere
+//Editare pret camera
+//Sa vada cate camere sunt libere/ocupate pentru o anumita perioada
+//Sa vada care este pretul obtinut din toate rezervarile dintr-o anumita perioada
 public class Admin {
     private String name;
     private List<Room> roomList;
@@ -66,8 +77,15 @@ public class Admin {
         return true;
     }
 
-    public void viewRooms(){
-        roomList.toString();
+    public String viewRooms(){
+       return roomList.toString();
+    }
+
+    public boolean isRoomAvailable(Room room, LocalDate startDate, LocalDate endDate){
+        List<Reservation> reservations = room.getRoomReservations();
+        return reservations.stream()
+                .noneMatch(reservation -> !endDate.isBefore(reservation.getCheckIn()) && !startDate.isAfter(reservation.getCheckOut()));
+
     }
 
     public boolean editPrice(Room room, int price) throws Exception {
@@ -80,25 +98,39 @@ public class Admin {
         return true;
     }
     //Sa vada cate camere sunt libere/ocupate pentru o anumita perioada
-    public long findNumberOfAvailableRooms (LocalDate startDate, LocalDate endDate){
-
-        return roomList.stream()
-                .flatMap(room->room.getRoomReservations().stream())
-                .filter(reservation -> !endDate.isBefore(reservation.getCheckIn()) && !startDate.isAfter(reservation.getCheckOut()))
-                .count();
-
-    }
     public long findNumberOfBookedRooms (LocalDate startDate, LocalDate endDate){
 
         return roomList.stream()
                 .flatMap(room->room.getRoomReservations().stream())
-                .filter(reservation -> endDate.isBefore(reservation.getCheckIn()) && startDate.isAfter(reservation.getCheckOut()))
+                .filter(reservation -> !endDate.isBefore(reservation.getCheckOut()) && !startDate.isAfter(reservation.getCheckIn()))
                 .count();
+
+    }
+    public long findNumberOfAvailableRooms (LocalDate startDate, LocalDate endDate){
+//din numarul total de camere scad numarul de camere ocupate
+        long allBookedRooms = findNumberOfBookedRooms(startDate, endDate);
+        long totalNumberOfRooms = roomList.size();
+        return totalNumberOfRooms-allBookedRooms;
+
 
     }
 
 
     //Sa vada care este pretul obtinut din toate rezervarile dintr-o anumita perioada
+        //sa calculeze cate nopti sunt in perioada dorita
+        //trebuie sa mearga prin lista lui de camere, sa filtreze dupa reservations perioada dorita
+            // sa adune la o suma pretul/noapte de la fiecare camera * numarul de nopti din perioada dorita
+    public long getTotalPricePerRooms(LocalDate startDate, LocalDate endDate){
+        long nightsBetween = ChronoUnit.DAYS.between(startDate,endDate);
+        long totalPricePerRoom = 0;
+        roomList.stream()
+                .map(room->room.getRoomReservations())
+                .map()
+
+///???????????????????????????????????????????????????????????????????????????????
+
+
+    }
 
 
 }
